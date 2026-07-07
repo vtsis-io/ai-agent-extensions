@@ -1,0 +1,11 @@
+{
+  "name": "project-starter",
+  "description": "Princípios gerais e catálogo de stacks (Modelo N) para iniciar novos projetos, com skill complementar para propor novos modelos.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Roberto Trevisan",
+    "email": "trevisan@gmail.com"
+  },
+  "repository": "https://github.com/vtsis-io/ai-agent-extensions",
+  "skills": "./skills/"
+}

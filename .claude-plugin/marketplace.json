@@ -1,0 +1,25 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "claude-plugins",
+  "metadata": {
+    "description": "Padrões de arquitetura de projeto compartilhados do time — estrutura de repo, convenção AGENTS.md e catálogo de stacks por tipo de projeto."
+  },
+  "owner": {
+    "name": "Roberto Trevisan",
+    "email": "trevisan@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "project-starter",
+      "description": "Princípios gerais e catálogo de stacks (Modelo N) para iniciar novos projetos, com skill complementar para propor novos modelos.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Roberto Trevisan",
+        "email": "trevisan@gmail.com"
+      },
+      "source": "./plugins/project-starter",
+      "category": "productivity",
+      "tags": ["architecture", "scaffolding", "project-starter"]
+    }
+  ]
+}
