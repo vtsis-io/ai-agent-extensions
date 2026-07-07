@@ -1,0 +1,90 @@
+{
+  "skill_name": "iac-provision",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Preciso de um novo endpoint REST /consultas que recebe requisições autenticadas via JWT do Cognito. A lógica vai ficar numa Lambda chamada api-consultas com 512MB de memória e timeout de 30 segundos. O ambiente é UAT.",
+      "expected_output": "Deve criar: (1) terragrunt.hcl para lambda_api_consultas usando o módulo lambda existente, (2) terragrunt.hcl para api_gateway_lambda_integration_api_consultas com route_key 'ANY /consultas/{proxy+}', authorization_type JWT, referenciando o api_gateway existente. Ambos com mock_outputs corretos, tags completas, local.env para naming.",
+      "assertions": [
+        {
+          "text": "Cria terragrunt.hcl para a Lambda com source apontando para o módulo lambda existente",
+          "type": "file_exists"
+        },
+        {
+          "text": "Cria terragrunt.hcl para a integração API Gateway com route_key contendo /consultas",
+          "type": "file_exists"
+        },
+        {
+          "text": "Os dois arquivos usam find_in_parent_folders para carregar env.hcl e region.hcl",
+          "type": "content_check"
+        },
+        {
+          "text": "A integração tem dependency block para api_gateway e para a lambda com mock_outputs realistas",
+          "type": "content_check"
+        },
+        {
+          "text": "O nome da Lambda usa sufixo ${local.env}",
+          "type": "content_check"
+        },
+        {
+          "text": "Tags incluem Terraform, Environment, Project e ManagedBy",
+          "type": "content_check"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Quero provisionar um job agendado que roda todo dia às 3h da manhã para limpar registros antigos do banco. Lambda chamada db-cleanup, 256MB, timeout de 5 minutos. Ambiente UAT.",
+      "expected_output": "Deve verificar que o módulo lambda_cron_schedule existe, criar terragrunt.hcl em lambda_cron_db_cleanup com a expressão cron correta (cron(0 3 * * ? *)), 256MB de memória, timeout 300s. Deve também criar ou referenciar um terragrunt.hcl para a lambda em si. Mostrar grafo de dependências e comandos de deploy.",
+      "assertions": [
+        {
+          "text": "Usa o módulo lambda_cron_schedule existente (não cria um novo)",
+          "type": "content_check"
+        },
+        {
+          "text": "Expressão cron correta para 3h da manhã: cron(0 3 * * ? *) ou rate equivalente",
+          "type": "content_check"
+        },
+        {
+          "text": "Timeout configurado como 300 (segundos)",
+          "type": "content_check"
+        },
+        {
+          "text": "Memory size 256",
+          "type": "content_check"
+        },
+        {
+          "text": "Fornece comandos de deploy com terragrunt init e plan",
+          "type": "content_check"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Preciso de uma fila SQS FIFO chamada payment-events para processar pagamentos. Uma Lambda chamada payment-processor deve consumir essa fila, com 512MB e timeout de 60s. Cria tudo no UAT. Se precisar criar módulo novo, faz seguindo o padrão do projeto.",
+      "expected_output": "Deve usar módulos existentes sqs e lambda. Para lambda_sqs_binding verifica se existe. Cria: (1) sqs/terragrunt.hcl com fifo_queue=true e content_based_deduplication, (2) lambda/terragrunt.hcl para payment-processor, (3) lambda_sqs_binding/terragrunt.hcl ligando os dois. Mostra ordem de apply. Se lambda_sqs_binding não tiver módulo completo, cria o module.",
+      "assertions": [
+        {
+          "text": "Cria configuração para a fila SQS com fifo_queue = true",
+          "type": "content_check"
+        },
+        {
+          "text": "Cria configuração para a Lambda com memória 512 e timeout 60",
+          "type": "content_check"
+        },
+        {
+          "text": "Conecta Lambda à fila via lambda_sqs_binding",
+          "type": "content_check"
+        },
+        {
+          "text": "Fornece grafo de dependências mostrando a ordem correta de apply (SQS antes do binding, Lambda antes do binding)",
+          "type": "content_check"
+        },
+        {
+          "text": "Todos os terragrunt.hcl têm mock_outputs com ARN e nome realistas",
+          "type": "content_check"
+        }
+      ]
+    }
+  ]
+}

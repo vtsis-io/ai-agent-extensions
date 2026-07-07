@@ -20,6 +20,18 @@
       "source": "./plugins/project-starter",
       "category": "productivity",
       "tags": ["architecture", "scaffolding", "project-starter"]
+    },
+    {
+      "name": "iac-provision",
+      "description": "Provisiona infraestrutura AWS (Terraform + Terragrunt) seguindo os padrões já estabelecidos no repositório do projeto.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Roberto Trevisan",
+        "email": "trevisan@gmail.com"
+      },
+      "source": "./plugins/iac-provision",
+      "category": "infrastructure",
+      "tags": ["terraform", "terragrunt", "aws", "iac"]
     }
   ]
 }

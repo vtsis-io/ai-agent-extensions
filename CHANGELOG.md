@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0
+
+- Novo plugin `iac-provision`: migração do skill local `~/.claude/skills/iac-provision`
+  (provisionamento de infraestrutura AWS via Terraform/Terragrunt), com references
+  (`module-conventions.md`, `terragrunt-template.hcl`) e evals.
+
 ## 0.1.0
 
 - Repo inicial do marketplace `vtsis-plugins`.

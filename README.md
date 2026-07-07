@@ -1,12 +1,15 @@
 # vtsis-plugins
 
-Marketplace de plugins Claude Code do time (repo `vtsis-io/ai-agent-extensions`). Hoje
-contém um único plugin:
+Marketplace de plugins Claude Code do time (repo `vtsis-io/ai-agent-extensions`). Plugins
+disponíveis:
 
 - **project-starter** — padrões de arquitetura de referência para iniciar projetos novos
   (estrutura de repositório, convenção `AGENTS.md`, princípios gerais e catálogo de stacks
   por tipo de projeto — "Modelo N"), com um skill complementar (`arch-system-design`) para
   propor novos Modelos quando o tipo de projeto ainda não está coberto.
+- **iac-provision** — provisiona infraestrutura AWS (Terraform + Terragrunt) seguindo os
+  padrões já estabelecidos no repositório do projeto (Lambda, API Gateway, SQS, Cognito,
+  EventBridge, etc.).
 
 ## Instalação
 
@@ -15,11 +18,11 @@ Em cada máquina:
 ```
 /plugin marketplace add vtsis-io/ai-agent-extensions
 /plugin install project-starter@vtsis-plugins
+/plugin install iac-provision@vtsis-plugins
 ```
 
-Depois de instalado, os skills `project-starter` e `arch-system-design` disparam
-automaticamente quando o Claude Code identificar um contexto relevante (ex: "quero iniciar
-um projeto de API REST", "qual stack usar para um projeto CLI").
+Depois de instalado, os skills disparam automaticamente quando o Claude Code identificar
+um contexto relevante (ex: "quero iniciar um projeto de API REST", "cria uma lambda nova").
 
 ## Estrutura do repo
 
@@ -38,6 +41,17 @@ plugins/
           modelo-2-frontend-fullstack.md
       arch-system-design/
         SKILL.md                  # propõe novos Modelos N
+  iac-provision/
+    .claude-plugin/
+      plugin.json
+    skills/
+      iac-provision/
+        SKILL.md                  # provisiona AWS via Terraform/Terragrunt
+        references/
+          module-conventions.md
+          terragrunt-template.hcl
+        evals/
+          evals.json
 ```
 
 ## Evoluindo o catálogo

@@ -1,0 +1,11 @@
+{
+  "name": "iac-provision",
+  "description": "Provisiona infraestrutura AWS (Terraform + Terragrunt) seguindo os padrões já estabelecidos no repositório do projeto — Lambda, API Gateway, SQS, Cognito, EventBridge e outros recursos.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Roberto Trevisan",
+    "email": "trevisan@gmail.com"
+  },
+  "repository": "https://github.com/vtsis-io/ai-agent-extensions",
+  "skills": "./skills/"
+}
