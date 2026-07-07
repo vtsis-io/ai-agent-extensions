@@ -1,6 +1,6 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "claude-plugins",
+  "name": "vtsis-plugins",
   "metadata": {
     "description": "Padrões de arquitetura de projeto compartilhados do time — estrutura de repo, convenção AGENTS.md e catálogo de stacks por tipo de projeto."
   },

@@ -1,6 +1,7 @@
-# claude-plugins
+# vtsis-plugins
 
-Marketplace de plugins Claude Code do time. Hoje contém um único plugin:
+Marketplace de plugins Claude Code do time (repo `vtsis-io/ai-agent-extensions`). Hoje
+contém um único plugin:
 
 - **project-starter** — padrões de arquitetura de referência para iniciar projetos novos
   (estrutura de repositório, convenção `AGENTS.md`, princípios gerais e catálogo de stacks
@@ -13,7 +14,7 @@ Em cada máquina:
 
 ```
 /plugin marketplace add vtsis-io/ai-agent-extensions
-/plugin install project-starter@claude-plugins
+/plugin install project-starter@vtsis-plugins
 ```
 
 Depois de instalado, os skills `project-starter` e `arch-system-design` disparam

@@ -20,7 +20,7 @@ e `project-starter/references/`), para tipos de projeto ainda não cobertos.
    - `## Estrutura de pastas` — árvore de diretórios
    - `## Padrões` — regras específicas do tipo de projeto
    - `## Infraestrutura` — referência ao submodule `devops/AGENTS.md`
-3. **Gerar os artefatos prontos para PR** neste repo (`claude-plugins` / plugin `project-starter`):
+3. **Gerar os artefatos prontos para PR** neste repo (`vtsis-io/ai-agent-extensions`, marketplace `vtsis-plugins`, plugin `project-starter`):
    - O arquivo novo `plugins/project-starter/skills/project-starter/references/modelo-N-{tipo}.md`
      com o conteúdo do passo 2.
    - O trecho de linha a acrescentar na tabela "Catálogo de Modelos" do

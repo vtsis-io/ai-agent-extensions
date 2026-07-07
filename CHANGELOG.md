@@ -2,7 +2,7 @@
 
 ## 0.1.0
 
-- Repo inicial do marketplace `claude-plugins`.
+- Repo inicial do marketplace `vtsis-plugins`.
 - Plugin `project-starter`: migração dos padrões de arquitetura do `~/.claude/CLAUDE.md`
   pessoal (estrutura de repo/submodule `devops`, convenção `AGENTS.md`, princípios gerais,
   Modelo 1 — API REST/Backend, Modelo 2 — Frontend/Fullstack).
