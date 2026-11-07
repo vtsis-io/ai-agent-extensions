@@ -1,79 +1,94 @@
 ---
 name: project-starter
-description: Padrões de arquitetura de referência para iniciar um projeto novo — estrutura de repositório, convenção AGENTS.md e catálogo de stacks por tipo de projeto (Modelo 1 — API REST/Backend, Modelo 2 — Frontend/Fullstack). Use quando o usuário for iniciar um projeto novo, perguntar "qual stack usar para X", pedir a estrutura de pastas padrão, ou mencionar o submodule devops.
+description: Padrões do time para iniciar ou estruturar um projeto — estrutura de repositório com o submodule devops, convenção AGENTS.md, documentação (TRD, ADRs, PRDs, OpenSpec), regras invariantes e defaults de plataforma por perfil de deploy (Lambda TypeScript, Lambda Python, SPA estática, container). Use ao iniciar um projeto novo, montar a estrutura de um repositório, escolher linguagem, runtime ou perfil de deploy, ou quando o escrever-trd precisar dos defaults do time. Não decide framework de UI, ORM nem estrutura interna de pastas — isso é do TRD de cada projeto.
 ---
 
 # Project Starter
 
-Padrões arquiteturais de referência do time. Ao iniciar qualquer projeto, identifique o
-modelo aplicável na tabela de Modelos abaixo e leia o `references/*` correspondente antes
-de propor stack ou estrutura de pastas. Se nenhum modelo existente cobrir o tipo de projeto,
-use o skill `arch-system-design` para propor um novo Modelo N.
+Padrão do time em três camadas:
 
-## Estrutura padrão de repositório
+1. **Obrigatório** — estrutura de repositório, documentação e regras invariantes. Vale para todo projeto.
+2. **Defaults de plataforma** — linguagem, runtime, empacotamento, testes e logger por perfil de deploy.
+   Padronizados porque o pipeline e a IaC do `devops` dependem deles.
+3. **Livre** — o resto da stack, decidido no TRD do projeto.
 
-Todo projeto segue esta convenção de repositórios:
+Desviar de qualquer item das camadas 1 ou 2 exige um ADR no projeto. Uma vez registrado, o TRD e os
+ADRs do projeto prevalecem sobre este skill para aquele projeto — este skill não reabre decisões já
+registradas.
+
+## 1. Obrigatório
+
+### Repositório
 
 ```
-{project}/          # Repositório principal da aplicação
-└── devops/         # Submodule Git — repositório centralizado de DevOps
+{projeto}/
+├── AGENTS.md              # instruções canônicas para agentes de IA
+├── CLAUDE.md              # contém só a linha @AGENTS.md
+├── azure-pipelines.yml    # só referencia o template em devops/pipeline/azure/{projeto}/
+├── docs/
+│   ├── trd.md             # stack, arquitetura, padrões técnicos do projeto
+│   ├── adrs/              # NNN-titulo.md, uma decisão por arquivo
+│   └── prds/              # requisitos de produto, um por feature
+├── openspec/              # changes em andamento (design, tasks)
+└── devops/                # submodule Git do repositório de DevOps
 ```
 
-- O submodule `devops` é adicionado em **todo projeto** como `git submodule add <devops-repo> devops`
-- Definições de IaC (Terraform/Terragrunt) e pipelines CI/CD ficam **exclusivamente** no repo `devops`
-- O repo de app **aponta para templates de pipeline** dentro de `devops/` — não duplica configurações de infra
-- O repo `devops` possui seu próprio `AGENTS.md` com padrões de IaC e pipelines
+- IaC (Terraform/Terragrunt) e pipelines ficam **exclusivamente** no submodule `devops`, que tem o
+  próprio `AGENTS.md`. O repo de app não duplica configuração de infra.
+- Outros repositórios do mesmo produto podem entrar como submodules adicionais. Decisões que afetam
+  mais de um repositório ficam como ADR no repo que as origina; os demais referenciam.
 
-## Documentação como Fonte da Verdade — AGENTS.md
+### AGENTS.md
 
-`AGENTS.md` é o arquivo canônico de instruções para agentes de IA em **todo repositório**
-(app principal e o submodule `devops`, cada um com o seu). É um padrão aberto (formalizado
-em 2025, doado à Agentic AI Foundation da Linux Foundation) lido nativamente por múltiplas
-ferramentas — Claude Code, Cursor, Codex, Copilot, etc. — ao contrário de `CLAUDE.md`, que
-só o Claude Code lê.
+- Um `AGENTS.md` canônico na raiz de cada repositório (app e `devops`). Markdown puro.
+- `CLAUDE.md` contém apenas `@AGENTS.md` — import do Claude Code, que carrega o `CLAUDE.md`. O
+  `devops/` segue o mesmo par de arquivos.
+- Não criar `.cursorrules`, `.github/copilot-instructions.md` ou similares duplicando conteúdo. A
+  sintaxe `@AGENTS.md` só funciona no `CLAUDE.md`.
+- O `AGENTS.md` do app referencia `devops/AGENTS.md` na seção de infraestrutura.
+- Conteúdo enxuto: propósito, documentos de referência, estrutura, comandos e regras. Profundidade
+  fica em `docs/`; o `AGENTS.md` referencia, não duplica.
 
-- **Um único arquivo canônico por repo:** `AGENTS.md` na raiz. Markdown puro, sem
-  frontmatter obrigatório.
-- **Arquivos específicos de ferramenta viram pointer:** `CLAUDE.md` (e qualquer outro que
-  surgir, como `.cursorrules` ou `.github/copilot-instructions.md`) contém apenas uma linha:
-  ```
-  @AGENTS.md
-  ```
-  Nunca duplicar conteúdo entre `AGENTS.md` e esses pointers — toda mudança de convenção é
-  feita uma vez, no `AGENTS.md`.
-- **Referência cruzada app ↔ devops:** como `devops/` é um submodule (fisicamente um
-  subdiretório do app no disco), ferramentas compatíveis já resolvem `devops/AGENTS.md`
-  automaticamente ao editar arquivos dentro dele (mesma lógica de "arquivo mais próximo
-  vence" usada em monorepos). Ainda assim, o `AGENTS.md` do app principal mantém uma
-  referência explícita a `devops/AGENTS.md` na seção de infraestrutura — cobre ferramentas
-  que só leem o arquivo raiz uma vez, sem re-scan por diretório.
-- Documentação de profundidade (arquitetura detalhada, padrões de API, etc.) continua em
-  arquivos próprios (ex: `docs/architecture.md`) — `AGENTS.md` referencia, não duplica.
+### Documentação
 
-## Princípios Gerais (sempre aplicar)
+- `docs/trd.md` e ADRs: skill `escrever-trd` (Modo Decision para ADR).
+- `docs/prds/`: skill `escrever-prd`.
+- Changes de implementação: OpenSpec em `openspec/changes/`.
 
-- **Linguagem padrão:** TypeScript (strict mode ativado)
-- **Runtime:** Node.js LTS
-- **Gerenciador de pacotes:** npm ou pnpm (preferir pnpm em monorepos)
-- **Formatação:** Prettier + ESLint (nunca commitar código sem passar)
-- **Testes:** Vitest para unitários; separar testes de integração em pasta dedicada
-- **Variáveis de ambiente:** sempre via `.env` com `.env.example` versionado; nunca hardcodar secrets
-- **Commits:** Conventional Commits (`feat:`, `fix:`, `chore:`, etc.)
-- **Containerização:** todo projeto deve ter `Dockerfile` e `docker-compose.yml` para dev local
-- **Nunca usar:** `any` em TypeScript sem justificativa explícita; `console.log` em produção (usar logger estruturado)
+### Regras invariantes
 
-## Catálogo de Modelos
+- **Commits:** Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`...).
+- **Release:** tag `vX.Y.Z` dispara o pipeline do `devops` (UAT → PRD com aprovação).
+- **Segredos:** em runtime, só no SSM Parameter Store. `.env` apenas para dev local, com
+  `.env.example` versionado. Nenhum segredo no repositório.
+- **Logs:** estruturados, via Powertools Logger da linguagem. Nunca conteúdo sensível nem dado
+  pessoal completo (telefone, e-mail, documento).
+- **Dev local:** `docker-compose.yml` para as dependências (banco, emuladores) quando houver.
+  `Dockerfile` da aplicação só no perfil container.
+- **Qualidade:** lint, formatação e testes passam antes do commit e no pipeline.
 
-| Modelo | Quando usar | Referência |
-|---|---|---|
-| Modelo 1 — API REST / Backend | APIs REST, serviços backend, microserviços | `references/modelo-1-api-rest.md` |
-| Modelo 2 — Frontend / Fullstack | Web apps, dashboards, aplicações fullstack com SSR/SSG | `references/modelo-2-frontend-fullstack.md` |
+## 2. Defaults de plataforma
 
-Cada `reference` só deve ser lido quando o tipo de projeto em questão bate com aquele modelo —
-não carregue todos os modelos de uma vez.
+Escolha um perfil por unidade deployável — um repo pode ter mais de um (ex.: SPA + API em Lambda).
+Os perfis e seus defaults estão em `references/perfis-de-deploy.md`; leia antes de propor a stack.
 
-## Quando nenhum Modelo existente cobre o projeto
+Defaults comuns a todo código TypeScript: strict mode, `any` só com justificativa, pnpm (com workspaces
+quando houver mais de um app), ESLint + Prettier, Vitest, nada de `console.log` em produção.
 
-Use o skill `arch-system-design` deste mesmo plugin para levantar a stack, gerar o novo
-arquivo `references/modelo-N-{tipo}.md` e o trecho de índice a acrescentar na tabela acima,
-prontos para virar PR neste repo.
+## 3. Livre — decidido no TRD do projeto
+
+Framework de UI e de API, estado, formulários, ORM ou query builder, banco de dados, autenticação,
+estrutura interna de pastas. O TRD registra a escolha e o motivo; este skill não prescreve.
+
+## Ao iniciar um projeto
+
+1. Identifique o(s) perfil(is) de deploy.
+2. Crie a estrutura obrigatória (repo, `AGENTS.md` + `CLAUDE.md`, `docs/`, submodule `devops`).
+3. Escreva o TRD com o `escrever-trd`, partindo dos defaults do perfil. Desvio dos defaults vira ADR.
+4. Pipeline e IaC: no `devops`, seguindo `devops/AGENTS.md`.
+
+## Evoluir este padrão
+
+Mudança de padrão é PR em `vtsis-io/ai-agent-extensions` (plugin `project-starter`), nunca edição em
+`~/.claude/CLAUDE.md`. Perfil novo só quando exige empacotamento ou pipeline diferente no `devops`;
+escolhas de biblioteca ficam nos TRDs. Suba a versão do plugin a cada mudança.

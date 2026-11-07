@@ -1,7 +1,7 @@
 {
   "name": "project-starter",
-  "description": "Princípios gerais e catálogo de stacks (Modelo N) para iniciar novos projetos, com skill complementar para propor novos modelos.",
-  "version": "0.1.0",
+  "description": "Padrões do time para iniciar projetos: estrutura de repositório com submodule devops, AGENTS.md, documentação (TRD/ADR/PRD), regras invariantes e defaults de plataforma por perfil de deploy.",
+  "version": "0.2.0",
   "author": {
     "name": "Roberto Trevisan",
     "email": "trevisan@gmail.com"
