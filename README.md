@@ -3,10 +3,10 @@
 Marketplace de plugins Claude Code do time (repo `vtsis-io/ai-agent-extensions`). Plugins
 disponíveis:
 
-- **project-starter** — padrões de arquitetura de referência para iniciar projetos novos
-  (estrutura de repositório, convenção `AGENTS.md`, princípios gerais e catálogo de stacks
-  por tipo de projeto — "Modelo N"), com um skill complementar (`arch-system-design`) para
-  propor novos Modelos quando o tipo de projeto ainda não está coberto.
+- **project-starter** — padrões do time para iniciar projetos: estrutura de repositório com
+  o submodule `devops`, convenção `AGENTS.md`, documentação (TRD, ADRs, PRDs, OpenSpec),
+  regras invariantes e defaults de plataforma por perfil de deploy. Framework, ORM e
+  estrutura interna de pastas ficam no TRD de cada projeto.
 - **iac-provision** — provisiona infraestrutura AWS (Terraform + Terragrunt) seguindo os
   padrões já estabelecidos no repositório do projeto (Lambda, API Gateway, SQS, Cognito,
   EventBridge, etc.).
@@ -22,7 +22,7 @@ Em cada máquina:
 ```
 
 Depois de instalado, os skills disparam automaticamente quando o Claude Code identificar
-um contexto relevante (ex: "quero iniciar um projeto de API REST", "cria uma lambda nova").
+um contexto relevante (ex: "quero iniciar um projeto novo", "cria uma lambda nova").
 
 ## Estrutura do repo
 
@@ -35,12 +35,9 @@ plugins/
       plugin.json                 # manifesto do plugin
     skills/
       project-starter/
-        SKILL.md                  # princípios gerais + estrutura devops/AGENTS.md + índice dos Modelos
+        SKILL.md                  # obrigatório (repo, AGENTS.md, docs, regras) + defaults + livre
         references/
-          modelo-1-api-rest.md
-          modelo-2-frontend-fullstack.md
-      arch-system-design/
-        SKILL.md                  # propõe novos Modelos N
+          perfis-de-deploy.md     # Lambda TS, Lambda Python, SPA estática, container
   iac-provision/
     .claude-plugin/
       plugin.json
@@ -54,10 +51,10 @@ plugins/
           evals.json
 ```
 
-## Evoluindo o catálogo
+## Evoluindo os padrões
 
-Novo tipo de projeto sem Modelo correspondente? Peça ao Claude Code para acionar o skill
-`arch-system-design` — ele gera o novo `references/modelo-N-{tipo}.md` e o trecho de índice
-para o `SKILL.md` do `project-starter`, prontos para virar PR neste repo. Depois do merge,
-cada máquina recebe a atualização no próximo refresh do marketplace
-(`/plugin marketplace update` ou automático, conforme configuração do Claude Code).
+Mudança de padrão é PR neste repo, com a versão do plugin incrementada em `plugin.json` e no
+`marketplace.json` — sem bump de versão as máquinas já instaladas não recebem a atualização.
+Perfil de deploy novo só quando exige empacotamento ou pipeline diferente no `devops`;
+escolhas de biblioteca ficam nos TRDs dos projetos. Depois do merge, cada máquina recebe a
+atualização no próximo `/plugin marketplace update`.

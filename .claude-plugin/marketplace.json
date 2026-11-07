@@ -2,7 +2,7 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "vtsis-plugins",
   "metadata": {
-    "description": "Padrões de arquitetura de projeto compartilhados do time — estrutura de repo, convenção AGENTS.md e catálogo de stacks por tipo de projeto."
+    "description": "Plugins compartilhados do time — padrões de projeto (project-starter) e provisionamento de infraestrutura AWS (iac-provision)."
   },
   "owner": {
     "name": "Roberto Trevisan",
@@ -11,8 +11,8 @@
   "plugins": [
     {
       "name": "project-starter",
-      "description": "Princípios gerais e catálogo de stacks (Modelo N) para iniciar novos projetos, com skill complementar para propor novos modelos.",
-      "version": "0.1.0",
+      "description": "Padrões do time para iniciar projetos: estrutura de repositório com submodule devops, AGENTS.md, documentação (TRD/ADR/PRD), regras invariantes e defaults de plataforma por perfil de deploy.",
+      "version": "0.2.0",
       "author": {
         "name": "Roberto Trevisan",
         "email": "trevisan@gmail.com"
